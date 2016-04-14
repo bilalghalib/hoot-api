@@ -1,7 +1,7 @@
 var User = require('../models/user');
 var passport = require('passport');
 var Verify = require('../server/verify.js');
-var console = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"});
+var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"}).log;
 
 exports.listAll = function (req, res, next) {
   User.find({}, function (err, users) {

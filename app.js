@@ -8,7 +8,7 @@ var database = require('./server/database');
 
 var passport = require('passport');
 var cors = require('cors');
-var console = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"});
+var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"}).log;
 
 var app = express();
 database.connect();

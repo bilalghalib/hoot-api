@@ -7,8 +7,8 @@
 var app = require('../app');
 var debug = require('debug')('api:server');
 var http = require('http');
-var console = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"});
-
+var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"}).log;
+var art = require('ascii-art');
 /**
  * Get port from environment and store in Express.
  */
@@ -88,7 +88,11 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
-  console.log("###########################################################################");
-  console.log("Server Running on port "+ app.get('port'));
-  console.log("###########################################################################");
+
+  art.font('sudofy    api    server', 'Doom', function(rendered){
+    console.log(rendered);
+  });
+
+  log("Server Running on port "+ app.get('port'));
+  log("###########################################################################");
 }

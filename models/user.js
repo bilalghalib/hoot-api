@@ -1,4 +1,4 @@
-var console = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"});
+var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"}).log;
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');

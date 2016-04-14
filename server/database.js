@@ -1,6 +1,6 @@
 var config = require('../config/config');
 var mongoose = require('mongoose');
-var console = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"});
+var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"}).log;
 
 exports.connect = function (){
   mongoose.connect(config.mongoUrl);
@@ -8,8 +8,8 @@ exports.connect = function (){
   db.on('error', console.error.bind(console, 'connection error:'));
   db.once('open', function () {
     // we're connected!
-    console.log("MongoDB connected on "+ config.mongoUrl);
-    console.log("###########################################################################");
+    log("MongoDB connected on "+ config.mongoUrl);
+    log("###########################################################################");
   });
 };
 

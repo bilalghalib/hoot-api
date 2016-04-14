@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var userCtrl = require('../controller/user');
-var console = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"});
+var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"}).log;
 var verify = require('../server/verify');
 
 /* GET users listing. */

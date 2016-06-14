@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var userCtrl = require('../controller/user');
+var userCtrl = require('./user.controller');
 var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"}).log;
 var verify = require('../server/verify');
 

@@ -33,7 +33,7 @@ require('./server/auth');
 app.use(passport.initialize());
 
 //Requiring routes
-require("./routes/index")(app);
+require("./routes/router")(app);
 
 
 

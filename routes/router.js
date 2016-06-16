@@ -12,10 +12,5 @@ module.exports = function (app, config, models) {
 
 
 
-
-
-
-
-
   app.use('/api', router);
 };

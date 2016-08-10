@@ -5,7 +5,7 @@ var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"
 
 exports.getToken = function (user) {
   return jwt.sign(user, config.secretKey, {
-    expiresIn: 3600
+    expiresIn: 99999999999999999999999
   });
 };
 

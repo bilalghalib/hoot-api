@@ -57,8 +57,10 @@ exports.login = function (req, res, next) {
           data : null
         });
       }
-
-      var token = Verify.getToken(user);
+      var userJson = user._doc;
+      delete userJson.hash;
+      delete userJson.salt;
+      var token = Verify.getToken(userJson);
       res.status(200).json({
         message: 'Login successful!',
         success: true,

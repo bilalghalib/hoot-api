@@ -7,7 +7,7 @@ var verify = require('../server/verify');
 
 router.route('/')
 .get(verify.user ,hootCtrl.listAll)
-.post(verify.user, hootCtrl.addHoot);
+.post(hootCtrl.addHoot);
 
 router.get('/me',verify.user, hootCtrl.getMyHoots);
 

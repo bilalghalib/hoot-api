@@ -8,6 +8,10 @@ var User = new Schema({
   password: String,
   OauthId: String,
   OauthToken: String,
+  read:[{
+    type: Schema.Types.ObjectId,
+    ref: 'Hoot'
+  }],
   firstname: {
     type: String,
     default: ''

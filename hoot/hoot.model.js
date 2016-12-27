@@ -2,6 +2,7 @@ var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var passportLocalMongoose = require('passport-local-mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 
 var Hoot = new Schema({
   user: {
@@ -12,4 +13,6 @@ var Hoot = new Schema({
 {
     timestamps: true
 });
+Hoot.plugin(mongoosePaginate);
+
 module.exports = mongoose.model('Hoot', Hoot);

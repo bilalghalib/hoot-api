@@ -9,8 +9,7 @@ exports.listAll = function (req, res, next) {
     res.json(users);
   });
 };
-
-exports.register = function(req,res){
+var register = function register(req,res){
   User.register(new User({
       username: req.body.username
     }),
@@ -28,16 +27,21 @@ exports.register = function(req,res){
         user.lastname = req.body.lastname;
       }
       user.save(function (err, user) {
+        var userJson = user._doc;
+        delete userJson.hash;
+        delete userJson.salt;
+        var token = Verify.getToken(userJson);
         passport.authenticate('local')(req, res, function () {
           return res.status(200).json({
             message: 'User registered',
             success: true,
-            data : null
+            data : {token:token}
           });
         });
       });
     });
 };
+exports.register = register;
 
 exports.login = function (req, res, next) {
   passport.authenticate('local', function (err, user, info) {
@@ -45,9 +49,7 @@ exports.login = function (req, res, next) {
       return next(err);
     }
     if (!user) {
-      return res.status(401).json({
-        err: info
-      });
+      return register(req,res);
     }
     req.logIn(user, function (err) {
       if (err) {

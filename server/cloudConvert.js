@@ -5,7 +5,7 @@ var AWS = require('aws-sdk');
 var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"}).log;
 
 
-exports.convertAudio = function (data) {
+exports.convertAudio = function (data,name) {
   return Q.promise(function (resolve,reject) {
     cloudconvert.createProcess({inputformat: 'amr', outputformat: 'wav'}, function (err, process) {
       log(data);
@@ -16,7 +16,7 @@ exports.convertAudio = function (data) {
         process.start({
           input: 'base64',
           file: data.audio,
-          filename: data.name,
+          filename: name + '.amr',
           converteroptions: {
             audio_bitrate: "128",
             audio_frequency: "44100",

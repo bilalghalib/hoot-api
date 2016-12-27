@@ -10,14 +10,14 @@ AWS.config.update({
 var s3 = new AWS.S3();
 
 
-exports.uploadBase64 = function (data) {
+exports.uploadBase64 = function (data,name) {
 
   return  Q.Promise(function(resolve,reject){
     var buf = new Buffer(data.audio.replace(/^data:audio\/\w+;base64,/, ""),'base64');
     var bucketName = config.s3.bucket;
     var params = {
       Bucket:  bucketName,
-      Key: data.name,
+      Key: name + ".wav",
       Body: buf,
       ContentType: 'audio/' + data.type,
       ACL: 'public-read'

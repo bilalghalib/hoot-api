@@ -30,6 +30,7 @@ var register = function register(req,res){
         var userJson = user._doc;
         delete userJson.hash;
         delete userJson.salt;
+        delete userJson.read;
         var token = Verify.getToken(userJson);
         passport.authenticate('local')(req, res, function () {
           return res.status(200).json({
@@ -62,6 +63,7 @@ exports.login = function (req, res, next) {
       var userJson = user._doc;
       delete userJson.hash;
       delete userJson.salt;
+      delete userJson.read;
       var token = Verify.getToken(userJson);
       res.status(200).json({
         message: 'Login successful!',

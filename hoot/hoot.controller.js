@@ -58,7 +58,7 @@ exports.getHoots = function (req,res) {
 exports.hootRead = function (req,res) {
   User.findOne({_id:req._user._id}, function (err, user) {
     if (err) throw err;
-    user.read.push(req.body.hootid);
+    user.read.push(req.params.hid);
     user.save(function (err,newUser) {
       if (err) {
         return res.status(500).json({

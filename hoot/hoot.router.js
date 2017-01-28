@@ -12,7 +12,7 @@ router.route('/')
 router.route('/gethoot')
   .get(verify.user,hootCtrl.getHoots);
 
-router.route('/hootread')
+router.route('/hootread/:hid')
   .post(verify.user,hootCtrl.hootRead);
 router.get('/me',verify.user, hootCtrl.getMyHoots);
 

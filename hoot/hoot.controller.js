@@ -58,6 +58,16 @@ exports.getHoots = function (req,res) {
 exports.hootRead = function (req,res) {
   User.findOne({_id:req._user._id}, function (err, user) {
     if (err) throw err;
+    for(var read in user.read){
+      if(user.read[read] == req.params.hid){
+        return res.status(200).json({
+          message: 'Hoot Already Read',
+          success: true,
+          data: null
+        });
+      }
+    }
+
     user.read.push(req.params.hid);
     user.save(function (err,newUser) {
       if (err) {

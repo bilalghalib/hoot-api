@@ -27,7 +27,6 @@ exports.uploadBase64 = function (data,name) {
         log(err);
         reject(err);
       }else{
-        log(data);
         resolve(data);
         // TODO: save data to mongo
       }

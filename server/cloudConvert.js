@@ -8,9 +8,8 @@ var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"
 exports.convertAudio = function (data,name) {
   return Q.promise(function (resolve,reject) {
     cloudconvert.createProcess({inputformat: 'amr', outputformat: 'wav'}, function (err, process) {
-      log(data);
       if (err) {
-        console.error('CloudConvert Process creation failed: ' + err);
+        log('CloudConvert Process creation failed: ' + err);
       } else {
         // start the process. see https://cloudconvert.com/apidoc#create
         process.start({
@@ -32,17 +31,15 @@ exports.convertAudio = function (data,name) {
           },
           outputformat: "wav"
         }, function (err, process) {
-           log(process);
           if (err) {
-            console.error('CloudConvert Process start failed: ' + err);
+            log('CloudConvert Process start failed: ' + err);
           }
           process.wait(function (err, process) {
             if (err) {
+              log('CloudConvert Process start failed: ' + err);
               reject(err);
-              console.error('CloudConvert Process failed: ' + err);
             } else {
               resolve(process);
-              console.log('Done: ' + process.data.message);
             }
           });
 

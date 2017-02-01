@@ -8,6 +8,10 @@ var Hoot = new Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: 'User'
+  },
+  type:{
+    type: Number,  //public hoot = 0
+    default: 0     //private hoot = 1
   }
 },
 {

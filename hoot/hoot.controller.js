@@ -11,6 +11,7 @@ var log = require('tracer').console({format: "{{message}}  - {{file}}:{{line}}"}
 var s3Uploader = require('../server/s3uploader');
 var cloudConvert = require('../server/cloudConvert');
 var request = require('request');
+var Q = require('q');
 
 
 exports.listAll = function (req, res, next) {
@@ -22,10 +23,10 @@ exports.listAll = function (req, res, next) {
     });
 };
 
-exports.getHoots = function (req,res) {
+exports.getHoots = function (req, res) {
   log(req.query);
   var readHoots = [];
-  User.findOne({_id:req._user._id},'read', function (err, user) {
+  User.findOne({_id: req._user._id}, 'read', function (err, user) {
     readHoots = user.read;
     log(readHoots);
     if (err) {
@@ -35,8 +36,11 @@ exports.getHoots = function (req,res) {
         data: err
       });
     }
-    Hoot.paginate({user:{$ne:req._user._id},_id:{$nin:readHoots}},{offset:parseInt(req.query.offset),limit:parseInt(req.query.limit)},
-      function (err,hoots) {
+    Hoot.paginate({user: {$ne: req._user._id}, _id: {$nin: readHoots}}, {
+        offset: parseInt(req.query.offset),
+        limit: parseInt(req.query.limit)
+      },
+      function (err, hoots) {
         if (err) {
           return res.status(500).json({
             message: 'Could not get hoot',
@@ -55,11 +59,11 @@ exports.getHoots = function (req,res) {
 
 };
 
-exports.hootRead = function (req,res) {
-  User.findOne({_id:req._user._id}, function (err, user) {
+exports.hootRead = function (req, res) {
+  User.findOne({_id: req._user._id}, function (err, user) {
     if (err) throw err;
-    for(var read in user.read){
-      if(user.read[read] == req.params.hid){
+    for (var read in user.read) {
+      if (user.read[read] == req.params.hid) {
         return res.status(200).json({
           message: 'Hoot Already Read',
           success: true,
@@ -69,7 +73,7 @@ exports.hootRead = function (req,res) {
     }
 
     user.read.push(req.params.hid);
-    user.save(function (err,newUser) {
+    user.save(function (err, newUser) {
       if (err) {
         return res.status(500).json({
           message: 'Could not get hoot',
@@ -90,33 +94,49 @@ exports.addHoot = function (req, res) {
   // var hoot = new Hoot({
   //     user: req._user._id
   //   })
-  var data = req.body;
-  var hoot = new Hoot({
-    user: req._user
+  /*
+   var data = req.body;
+   var hoot = new Hoot({
+   user: req._user
+   });
+   var name = hoot._id;
+   log(name);
+   if (req.body.type == "amr") {
+   cloudConvert.convertAudio(data, name).then(function (res) {
+   log(res);
+   hoot.save(function (err, hoots) {
+   });
+   }, function (err) {
+   log(err);
+   });
+   }
+
+
+   else {
+   s3Uploader.uploadBase64(data, name).then(function (res) {
+   log(res);
+   hoot.save(function (err, hoots) {
+   });
+   }, function (err) {
+   log(err);
+   });
+   }
+   return res.json({
+   message: 'Uploading Hoot',
+   data: null,
+   success: true
+   });
+   */
+
+  saveHoot(req.body, req._user._id).then(function (data) {
+    log(data);
+    res.json(data);
+  }, function (err) {
+    log(err);
+  }, function (notify) {
+    log(notify)
   });
-  var name = hoot._id;
-  log(name);
-  if (req.body.type == "amr") {
-    cloudConvert.convertAudio(data, name).then(function (res) {
-      log(res);
-      hoot.save(function (err, hoots) {
-      });
-    }, function (err) {
-      log(err);
-    });
-  }
-
-
-  else {
-    s3Uploader.uploadBase64(data, name).then(function (res) {
-      log(res);
-      hoot.save(function (err, hoots) {
-      });
-    }, function (err) {
-      log(err);
-    });
-  }
-  return res.json({
+  res.json({
     message: 'Uploading Hoot',
     data: null,
     success: true
@@ -124,6 +144,65 @@ exports.addHoot = function (req, res) {
 
 };
 
+
+function saveHoot(data, user, hootType) {
+  return Q.Promise(function (resolve, reject, notify) {
+    //var data = req.body;
+    var hoot = new Hoot({
+      user: user,
+      type: hootType || 0
+    });
+    var name = hoot._id;
+    //log(name);
+    if (data.type == "amr") {
+      cloudConvert.convertAudio(data, name).then(function (res) {
+     //   log(res);
+        hoot.save(function (err, hoots) {
+          if (err) {
+            notify({
+              message: 'Saving Hoot Failed',
+              data: null,
+              success: false
+            })
+          }
+          resolve({
+            message: 'Upload to s3 Hoot done',
+            data: hoot,
+            success: true
+          });
+
+        });
+      }, function (err) {
+        notify({
+          message: 'Cloud Convert Failed',
+          data: null,
+          success: false
+        })
+      });
+    }
+
+
+    else {
+      s3Uploader.uploadBase64(data, name).then(function (res) {
+        //log(res);
+        hoot.save(function (err, hoots) {
+          resolve({
+            message: 'Upload to s3 Hoot done',
+            data: hoot,
+            success: true
+          });
+        });
+      }, function (err) {
+        notify({
+          message: 's3Uploader Failed',
+          data: null,
+          success: false
+        })
+      });
+    }
+  });
+}
+exports.saveHoot = saveHoot;
 
 exports.getMyHoots = function (req, res) {
   Hoot.find({user: req._user._id})

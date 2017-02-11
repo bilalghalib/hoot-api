@@ -1,4 +1,4 @@
-var Q = require('Q');
+var Q = require('q');
 var config = require('../config/config');
 var cloudconvert = new (require('cloudconvert'))(config.cloudConvertAPIKEY);
 var AWS = require('aws-sdk');

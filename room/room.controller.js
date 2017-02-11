@@ -8,7 +8,8 @@ var _ = require('lodash');
 
 
 exports.getAllRooms = function (req, res) {
-  Room.find({members: req._user._id}, function (err, rooms) {
+  log(req._user);
+  Room.find({}, function (err, rooms) {
     if (err) {
       return res.status(500).json({
         message: 'Something went wrong while getting Rooms',
@@ -16,9 +17,12 @@ exports.getAllRooms = function (req, res) {
         data: err
       });
     }
+    log(rooms);
     var minDate = _.minBy(rooms, function (o) {
       return o.updatedAt;
     });
+
+    log(minDate);
     res.status(200).json({
       message: 'Rooms successfully get',
       success: true,

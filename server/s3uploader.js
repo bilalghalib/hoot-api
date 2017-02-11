@@ -1,4 +1,4 @@
-var Q = require('Q');
+var Q = require('q');
 var AWS = require('aws-sdk');
 var config = require('../config/config');
 var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"}).log;

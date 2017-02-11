@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('../main');
 var debug = require('debug')('api:server');
 var http = require('http');
 var log = require('tracer').console({format : "{{message}}  - {{file}}:{{line}}"}).log;
